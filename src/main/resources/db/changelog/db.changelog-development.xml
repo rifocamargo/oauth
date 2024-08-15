@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<databaseChangeLog
+  xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+   
+   <include file="db/changelog/2021-08-19_CREATE_TABLES.xml"/>
+   <include file="db/changelog/2021-08-19_INSERT_DEFAULT_ENVIRONMENTS.xml"/>
+   <include file="db/changelog/2021-08-19_INSERT_DEFAULT_USER.xml"/>
+   <include file="db/changelog/2021-08-23_INSERT_DEFAULT_OAUTH_CLIENT_DETAILS.xml"/>
+   <include file="db/changelog/2022-11-09_INSERT_BEHAVIOR_SERVICE_OAUTH_CLIENT_DETAILS.xml"/>
+   <include file="db/changelog/2023-07-11_INSERT_JOB_SERVICE_AND_RUNNER_OAUTH_CLIENT_DETAILS.xml"/>
+   
+ </databaseChangeLog>

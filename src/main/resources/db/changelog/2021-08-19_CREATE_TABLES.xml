@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+	xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+	xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd
+        http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
+
+	<changeSet id="1629393670016" author="OAUTH-SERVICE">
+		<comment>
+			Cria as tabelas iniciais
+		</comment>
+		<createTable tableName="environments">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="environment_pk" />
+			</column>
+			<column name="hostname" type="varchar(255)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="created_at" type="datetime" />
+		</createTable>
+		<createSequence incrementBy="1"
+			sequenceName="SEQ_ENVIRONMENT_ID" startValue="1" />
+
+		<createTable tableName="user">
+			<column name="username" type="varchar(50)">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="user_pk" />
+			</column>
+			<column name="environment_id" type="bigint">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="user_pk" referencedTableName="environments"
+					referencedColumnNames="id" foreignKeyName="user_environment_id_fk" />
+			</column>
+			<column name="email" type="varchar(50)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="password" type="varchar(500)">
+				<constraints nullable="false" />
+			</column>
+			<column name="activated" type="boolean"
+				defaultValueBoolean="false">
+				<constraints nullable="false" />
+			</column>
+			<column name="activationkey" type="varchar(50)" />
+			<column name="resetpasswordkey" type="varchar(50)" />
+			<column name="authorities" type="varchar(500)">
+				<constraints nullable="false" />
+			</column>
+		</createTable>
+
+		<createTable tableName="oauth_client_details">
+			<column name="id" type="bigint" autoIncrement="true">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="oauth_client_details_pk" />
+			</column>
+			<column name="client_id" type="varchar(256)">
+				<constraints nullable="false" unique="true" />
+			</column>
+			<column name="environment_id" type="bigint">
+				<constraints referencedTableName="environments"
+					referencedColumnNames="id"
+					foreignKeyName="oauth_client_details_environment_id_fk" />
+			</column>
+			<column name="resource_ids" type="varchar(255)" />
+			<column name="client_secret" type="varchar(255)" />
+			<column name="scope" type="varchar(255)" />
+			<column name="authorized_grant_types" type="varchar(255)" />
+			<column name="web_server_redirect_uri" type="varchar(255)" />
+			<column name="authorities" type="varchar(255)" />
+			<column name="access_token_validity" type="integer" />
+			<column name="refresh_token_validity" type="integer" />
+			<column name="additional_information" type="varchar(4096)" />
+			<column name="autoapprove" type="varchar(255)" />
+		</createTable>
+		<createSequence incrementBy="1"
+			sequenceName="SEQ_OAUTH_CLIENT_DETAILS_ID" startValue="1" />
+
+		<createTable tableName="oauth_client_token">
+			<column name="authentication_id" type="varchar(256)">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="token_id" type="varchar(256)" />
+			<column name="token" type="blob" />
+			<column name="user_name" type="varchar(50)" />
+			<column name="client_id" type="varchar(256)" />
+		</createTable>
+
+		<createTable tableName="oauth_refresh_token">
+			<column name="token_id" type="varchar(256)">
+				<constraints nullable="false" primaryKey="true" />
+			</column>
+			<column name="token" type="blob" />
+			<column name="authentication" type="blob" />
+		</createTable>
+
+		<createTable tableName="oauth_access_token">
+			<column name="token_id" type="varchar(256)">
+				<constraints primaryKey="true" nullable="false" />
+			</column>
+			<column name="token" type="blob" />
+			<column name="authentication_id" type="varchar(256)" />
+			<column name="user_name" type="varchar(50)" />
+			<column name="client_id" type="varchar(256)" />
+			<column name="authentication" type="blob" />
+			<column name="refresh_token" type="varchar(256)" />
+		</createTable>
+
+		<createTable tableName="oauth_code">
+			<column name="code" type="varchar(255)" />
+			<column name="authentication" type="blob" />
+		</createTable>
+
+		<createTable tableName="oauth_approvals">
+			<column name="username" type="varchar(50)">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="oauth_approvals_pk" />
+			</column>
+			<column name="clientId" type="varchar(255)">
+				<constraints nullable="false" primaryKey="true"
+					primaryKeyName="oauth_approvals_pk" />
+			</column>
+			<column name="scope" type="varchar(255)" />
+			<column name="status" type="varchar(10)" />
+			<column name="expiresAt" type="datetime" />
+			<column name="lastModifiedAt" type="datetime" />
+		</createTable>
+	</changeSet>
+
+</databaseChangeLog>

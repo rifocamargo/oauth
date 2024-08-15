@@ -1,0 +1,126 @@
+server:  
+  port: ${PORT:8084}
+  servlet:
+    session:
+      tracking-modes:
+        - cookie
+      cookie:
+        name: OAUTH-SESSION
+  ssl:
+    enabled: ${SSL_ENABLED:false}
+    key-alias: ${SSL_KEY_ALIAS}
+    key-store: ${SSL_KEY_STORE}
+    key-store-password: ${SSL_KEY_STORE_PASSWORD}
+  
+spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
+  application:
+    name: oauth-service
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:production}
+  hateoas:
+    use-hal-as-default-json-media-type: false
+  session:
+    #store-type: ${spring.cache.type:none}
+    redis:
+      namespace: session-oauth-server     
+  sql:
+    init:
+      schema-locations: classpath:/script/schema.sql
+      data-locations: classpath:/script/data.sql
+  datasource:
+    url: jdbc:mysql://localhost:3306/oauth_poc?createDatabaseIfNotExist=true&useSSL=false&useTimezone=true&serverTimezone=UTC
+    username: root
+    password: lecom
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-master.xml
+  security:
+    user:
+      name: infra_user
+      ## senha aberta: DXLYkAFyTsJbK6fb
+      password: $argon2i$v=19$m=16,t=3,p=1$MGRhNUUzV28zRUlVUUozMw$KDVGQn7+w4V9yrt/XXww2TKcyVsMbqWu35gmLp2qGf0
+      roles:
+        - ROLE_INFRA
+        - ROLE_USER
+  cache:
+    type: none
+  data:
+    redis:
+      host: localhost
+      port: 6379
+
+---
+spring:
+  config:
+    activate:
+      on-profile:
+      - development
+  security:
+    user:
+      name: infra_user
+      ## senha aberta: secret
+      password: $argon2i$v=19$m=12,t=3,p=1$NXJnNk9PM0dBdmZsRnRvYw$AK7WOVL04hulY/xik7rU6jV6FkOoSm7uO0PRLBTUg28
+      roles:
+        - ROLE_INFRA
+        - ROLE_USER
+  liquibase:
+    change-log: classpath:/db/changelog/db.changelog-development.xml 
+
+#logging:
+#  level:
+#    org.springframework.security: debug
+#    org.springframework.security.web.util.matcher:  info
+
+
+logging:
+  level:
+    org:
+      springframework:
+        security: trace
+
+#spring:
+#  datasource:
+#    url: jdbc:mysql://localhost:3306/oauth_poc?createDatabaseIfNotExist=true&useSSL=false&useTimezone=true&serverTimezone=UTC
+#    username: root
+#    password: lecom
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#  security:
+#    user:
+#      name: user
+#      password: $argon2i$v=19$m=12,t=3,p=1$NXJnNk9PM0dBdmZsRnRvYw$AK7WOVL04hulY/xik7rU6jV6FkOoSm7uO0PRLBTUg28
+#    oauth2:
+#      authorizationserver:
+#        client:
+#          teco-teco:
+#            registration:
+#              client-id: "teco-teco"
+#              client-secret: "{noop}secret"
+#              client-authentication-methods:
+#                - "client_secret_basic"
+#              authorization-grant-types:
+#                - "client_credentials"
+#              redirect-uris:
+#                - "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
+#              post-logout-redirect-uris:
+#                - "http://127.0.0.1:8080/"
+#              scopes:
+#                - "read"
+#            require-authorization-consent: false
+#          oidc-client:
+#            registration:
+#              client-id: "oidc-client"
+#              client-secret: "{noop}secret"
+#              client-authentication-methods:
+#                - "client_secret_basic"
+#              authorization-grant-types:
+#                - "client_credentials"
+#              redirect-uris:
+#                - "http://127.0.0.1:8080/login/oauth2/code/oidc-client"
+#              post-logout-redirect-uris:
+#                - "http://127.0.0.1:8080/"
+#              scopes:
+#                - "read"
+#            require-authorization-consent: false
